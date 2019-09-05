@@ -1,6 +1,6 @@
 #pragma once
 
-#include "db/db_impl/db_impl.h"
+#include "db/db_impl.h"
 #include "rocksdb/statistics.h"
 #include "util/repeatable_thread.h"
 
