@@ -6402,12 +6402,13 @@ int db_bench_tool(int argc, char** argv) {
     exit(1);
   }
   if (!FLAGS_statistics_string.empty()) {
-    Status s = ObjectRegistry::NewInstance()->NewSharedObject<Statistics>(
-        FLAGS_statistics_string, &dbstats);
+    std::unique_ptr<Statistics> custom_stats_guard;
+    dbstats.reset(NewCustomObject<Statistics>(FLAGS_statistics_string,
+                                              &custom_stats_guard));
+    custom_stats_guard.release();
     if (dbstats == nullptr) {
-      fprintf(stderr,
-              "No Statistics registered matching string: %s status=%s\n",
-              FLAGS_statistics_string.c_str(), s.ToString().c_str());
+      fprintf(stderr, "No Statistics registered matching string: %s\n",
+              FLAGS_statistics_string.c_str());
       exit(1);
     }
   }
@@ -6435,11 +6436,12 @@ int db_bench_tool(int argc, char** argv) {
       StringToCompressionType(FLAGS_compression_type.c_str());
 
 #ifndef ROCKSDB_LITE
+  std::unique_ptr<Env> custom_env_guard;
   if (!FLAGS_hdfs.empty() && !FLAGS_env_uri.empty()) {
     fprintf(stderr, "Cannot provide both --hdfs and --env_uri.\n");
     exit(1);
   } else if (!FLAGS_env_uri.empty()) {
-    Status s = Env::LoadEnv(FLAGS_env_uri, &FLAGS_env);
+    FLAGS_env = NewCustomObject<Env>(FLAGS_env_uri, &custom_env_guard);
     if (FLAGS_env == nullptr) {
       fprintf(stderr, "No Env registered for URI: %s\n", FLAGS_env_uri.c_str());
       exit(1);
