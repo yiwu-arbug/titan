@@ -9,7 +9,7 @@ if (NOT ROCKSDB_GIT_REPO)
 endif()
 
 if (NOT ROCKSDB_GIT_BRANCH)
-  set(ROCKSDB_GIT_BRANCH "6.2.fb")
+  set(ROCKSDB_GIT_BRANCH "6.1.fb")
 endif()
 
 if (NOT DEFINED ROCKSDB_DIR)
