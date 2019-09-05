@@ -2,7 +2,7 @@
 
 #include <inttypes.h>
 
-#include "file/filename.h"
+#include "util/filename.h"
 
 #include "edit_collector.h"
 

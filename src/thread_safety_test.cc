@@ -5,7 +5,7 @@
 
 #include "db_impl.h"
 #include "db_iter.h"
-#include "file/filename.h"
+#include "util/filename.h"
 #include "port/port.h"
 #include "rocksdb/utilities/debug.h"
 #include "test_util/testharness.h"

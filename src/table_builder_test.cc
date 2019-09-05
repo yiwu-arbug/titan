@@ -1,5 +1,5 @@
 #include "table/table_builder.h"
-#include "file/filename.h"
+#include "util/filename.h"
 #include "table/table_reader.h"
 #include "test_util/testharness.h"
 

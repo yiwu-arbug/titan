@@ -4,7 +4,7 @@
 
 #include "db/column_family.h"
 #include "db/write_callback.h"
-#include "file/filename.h"
+#include "util/filename.h"
 #include "rocksdb/status.h"
 
 #include "blob_file_manager.h"

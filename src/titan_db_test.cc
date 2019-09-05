@@ -2,7 +2,7 @@
 #include <options/cf_options.h>
 #include <unordered_map>
 
-#include "file/filename.h"
+#include "util/filename.h"
 #include "rocksdb/utilities/debug.h"
 #include "test_util/sync_point.h"
 #include "test_util/testharness.h"

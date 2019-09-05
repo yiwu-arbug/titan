@@ -2,7 +2,7 @@
 
 #include <cinttypes>
 
-#include "file/filename.h"
+#include "util/filename.h"
 #include "test_util/testharness.h"
 
 #include "blob_file_builder.h"
