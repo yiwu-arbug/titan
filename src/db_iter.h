@@ -10,7 +10,7 @@
 #include <unordered_map>
 
 #include "db/db_iter.h"
-#include "logging/logging.h"
+#include "util/logging.h"
 #include "rocksdb/env.h"
 
 #include "titan_stats.h"

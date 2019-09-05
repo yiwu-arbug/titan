@@ -6,7 +6,7 @@
 
 #include <inttypes.h>
 
-#include "logging/logging.h"
+#include "util/logging.h"
 #include "options/options_helper.h"
 #include "rocksdb/convenience.h"
 

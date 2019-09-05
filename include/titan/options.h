@@ -3,7 +3,7 @@
 #include <map>
 #include <unordered_map>
 
-#include "logging/logging.h"
+#include "util/logging.h"
 #include "rocksdb/options.h"
 
 namespace rocksdb {
