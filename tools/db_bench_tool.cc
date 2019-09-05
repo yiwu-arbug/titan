@@ -791,9 +791,6 @@ DEFINE_bool(use_stderr_info_logger, false,
 
 DEFINE_string(trace_file, "", "Trace workload to a file. ");
 
-DEFINE_int32(trace_replay_fast_forward, 1,
-             "Fast forward trace replay, must >= 1. ");
-
 DEFINE_int32(block_cache_trace_sampling_frequency, 1,
              "Block cache trace sampling frequency, termed s. It uses spatial "
              "downsampling and samples accesses to one out of s blocks.");
@@ -6319,8 +6316,6 @@ class Benchmark {
     }
     Replayer replayer(db_with_cfh->db, db_with_cfh->cfh,
                       std::move(trace_reader));
-    replayer.SetFastForward(
-        static_cast<uint32_t>(FLAGS_trace_replay_fast_forward));
     s = replayer.Replay();
     if (s.ok()) {
       fprintf(stdout, "Replay started from trace_file: %s\n",
