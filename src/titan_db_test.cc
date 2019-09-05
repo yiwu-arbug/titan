@@ -4,7 +4,7 @@
 
 #include "util/filename.h"
 #include "rocksdb/utilities/debug.h"
-#include "test_util/sync_point.h"
+#include "util/sync_point.h"
 #include "test_util/testharness.h"
 #include "util/random.h"
 

@@ -9,7 +9,7 @@
 #include "util/filename.h"
 #include "util/crc32c.h"
 #include "util/string_util.h"
-#include "test_util/sync_point.h"
+#include "util/sync_point.h"
 
 #include "titan_stats.h"
 
