@@ -6,7 +6,7 @@
 #include <string>
 #include <unordered_map>
 
-#include "logging/log_buffer.h"
+#include "util/log_buffer.h"
 #include "rocksdb/iostats_context.h"
 #include "rocksdb/statistics.h"
 

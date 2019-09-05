@@ -6,7 +6,7 @@
 
 #include <inttypes.h>
 
-#include "logging/log_buffer.h"
+#include "util/log_buffer.h"
 #include "port/port.h"
 #include "util/autovector.h"
 
