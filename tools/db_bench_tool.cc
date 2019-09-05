@@ -6136,8 +6136,6 @@ class Benchmark {
   void Compact(ThreadState* thread) {
     DB* db = SelectDB(thread);
     CompactRangeOptions cro;
-    cro.bottommost_level_compaction =
-        BottommostLevelCompaction::kForceOptimized;
     db->CompactRange(cro, nullptr, nullptr);
   }
 
