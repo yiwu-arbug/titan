@@ -37,7 +37,8 @@ class BlobEncoder {
   BlobEncoder(CompressionType compression)
       : compression_ctx_(compression),
         compression_info_(compression_opt_, compression_ctx_,
-                          CompressionDict::GetEmptyDict(), compression) {}
+                          CompressionDict::GetEmptyDict(), compression,
+                          0 /*sample_for_compression*/) {}
 
   void EncodeRecord(const BlobRecord& record);
 
