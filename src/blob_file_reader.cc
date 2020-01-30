@@ -97,6 +97,13 @@ BlobFileReader::BlobFileReader(const TitanCFOptions& options,
 
 Status BlobFileReader::Get(const ReadOptions& /*options*/,
                            const BlobHandle& handle, BlobRecord* record,
+                           OwnedSlice* blob) {
+  TEST_SYNC_POINT("BlobFileReader::Get");
+  return ReadRecord(handle, record, blob);
+}
+
+Status BlobFileReader::Get(const ReadOptions& /*options*/,
+                           const BlobHandle& handle, BlobRecord* record,
                            PinnableSlice* buffer) {
   TEST_SYNC_POINT("BlobFileReader::Get");
 

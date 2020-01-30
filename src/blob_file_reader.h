@@ -29,6 +29,9 @@ class BlobFileReader {
   Status Get(const ReadOptions& options, const BlobHandle& handle,
              BlobRecord* record, PinnableSlice* buffer);
 
+  Status Get(const ReadOptions& options, const BlobHandle& handle,
+             BlobRecord* record, OwnedSlice* blob);
+
  private:
   friend class BlobFilePrefetcher;
 

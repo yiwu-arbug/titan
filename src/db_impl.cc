@@ -240,6 +240,7 @@ Status TitanDBImpl::OpenImpl(const std::vector<TitanCFDescriptor>& descs,
   if (!s.ok()) {
     return s;
   }
+  assert(directory_ != nullptr);
   s = env_->LockFile(LockFileName(dirname_), &lock_);
   if (!s.ok()) {
     return s;
@@ -303,7 +304,8 @@ Status TitanDBImpl::OpenImpl(const std::vector<TitanCFDescriptor>& descs,
   if (stats_ != nullptr) {
     stats_->Initialize(column_families);
   }
-  s = blob_file_set_->Open(column_families);
+  GenerateCachePrefix();
+  s = blob_file_set_->Open(column_families, cache_prefix_);
   if (!s.ok()) {
     return s;
   }
@@ -417,7 +419,7 @@ Status TitanDBImpl::CreateColumnFamilies(
                  MutableTitanCFOptions(descs[i].options), base_table_factory[i],
                  titan_table_factory[i]}));
       }
-      blob_file_set_->AddColumnFamilies(column_families);
+      blob_file_set_->AddColumnFamilies(column_families, cache_prefix_);
     }
   }
   if (s.ok()) {
@@ -1322,6 +1324,16 @@ void TitanDBImpl::DumpStats() {
     }
   }
   log_buffer.FlushBufferToLog();
+}
+
+void TitanDBImpl::GenerateCachePrefix() {
+  // Unlike block-based table, which have per-table cache prefix, we use
+  // the same cache prefix for all blob files for blob cache.
+  assert(directory_ != nullptr);
+  char buffer[kMaxVarint64Length * 3 + 1];
+  size_t size = directory_->GetUniqueId(buffer, sizeof(buffer));
+  assert(size > 0);
+  cache_prefix_.assign(buffer, size);
 }
 
 }  // namespace titandb

@@ -16,7 +16,7 @@ namespace titandb {
 // column family.
 class BlobStorage {
  public:
-  BlobStorage(const BlobStorage& bs) : destroyed_(false) {
+  BlobStorage(const BlobStorage& bs) : blob_cache_(nullptr), destroyed_(false) {
     this->files_ = bs.files_;
     this->file_cache_ = bs.file_cache_;
     this->db_options_ = bs.db_options_;
@@ -27,10 +27,13 @@ class BlobStorage {
 
   BlobStorage(const TitanDBOptions& _db_options,
               const TitanCFOptions& _cf_options, uint32_t cf_id,
+              const std::string& cache_prefix,
               std::shared_ptr<BlobFileCache> _file_cache, TitanStats* stats)
       : db_options_(_db_options),
         cf_options_(_cf_options),
         cf_id_(cf_id),
+        blob_cache_(cf_options_.blob_cache.get()),
+        cache_prefix_(cache_prefix),
         blob_ranges_(InternalComparator(_cf_options.comparator)),
         file_cache_(_file_cache),
         destroyed_(false),
@@ -141,6 +144,8 @@ class BlobStorage {
   TitanDBOptions db_options_;
   TitanCFOptions cf_options_;
   uint32_t cf_id_;
+  Cache* const blob_cache_;
+  const std::string cache_prefix_;
 
   mutable port::Mutex mutex_;
 

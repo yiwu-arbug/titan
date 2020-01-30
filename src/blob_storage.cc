@@ -6,12 +6,44 @@ namespace titandb {
 
 Status BlobStorage::Get(const ReadOptions& options, const BlobIndex& index,
                         BlobRecord* record, PinnableSlice* buffer) {
+  std::string cache_key;
+  Cache::Handle* cache_handle = nullptr;
+  if (blob_cache_ != nullptr) {
+    cache_key.assign(cache_prefix_);
+    index.EncodeTo(&cache_key);
+    blob_cache_->Lookup(cache_key);
+    if (cache_handle != nullptr) {
+      auto* cached_blob =
+          reinterpret_cast<OwnedSlice*>(blob_cache_->Value(cache_handle));
+      buffer->PinSlice(*cached_blob, UnrefCacheHandle, blob_cache_,
+                       cache_handle);
+      return DecodeInto(*cached_blob, record);
+    }
+  }
+  RecordTick(stats_, TitanStats::BLOB_CACHE_MISS);
+
   auto sfile = FindFile(index.file_number).lock();
-  if (!sfile)
+  if (!sfile) {
     return Status::Corruption("Missing blob file: " +
                               std::to_string(index.file_number));
-  return file_cache_->Get(options, sfile->file_number(), sfile->file_size(),
-                          index.blob_handle, record, buffer);
+  }
+  OwnedSlice blob;
+  Status s = file_cache_->Get(options, sfile->file_number(), sfile->file_size(),
+                              index.blob_handle, record, &blob);
+  if (!s.ok()) {
+    return s;
+  }
+
+  if (blob_cache_ == nullptr) {
+    OwnedSlice* cache_value = new OwnedSlice(std::move(blob));
+    size_t cache_size = cache_value->size() + sizeof(*cache_value);
+    blob_cache_->Insert(cache_key, cache_value, cache_size,
+                        &DeleteCacheValue<OwnedSlice>, &cache_handle);
+    buffer->PinSlice(*cache_value, UnrefCacheHandle, blob_cache_, cache_handle);
+  } else {
+    buffer->PinSlice(blob, OwnedSlice::CleanupFunc, blob.release(), nullptr);
+  }
+  return s;
 }
 
 Status BlobStorage::NewPrefetcher(uint64_t file_number,

@@ -23,9 +23,10 @@ BlobFileSet::BlobFileSet(const TitanDBOptions& options, TitanStats* stats)
 }
 
 Status BlobFileSet::Open(
-    const std::map<uint32_t, TitanCFOptions>& column_families) {
+    const std::map<uint32_t, TitanCFOptions>& column_families,
+    const std::string& cache_prefix) {
   // Sets up initial column families.
-  AddColumnFamilies(column_families);
+  AddColumnFamilies(column_families, cache_prefix);
 
   Status s = env_->FileExists(CurrentFileName(dirname_));
   if (s.ok()) {
@@ -230,12 +231,13 @@ Status BlobFileSet::LogAndApply(VersionEdit& edit) {
 }
 
 void BlobFileSet::AddColumnFamilies(
-    const std::map<uint32_t, TitanCFOptions>& column_families) {
+    const std::map<uint32_t, TitanCFOptions>& column_families,
+    const std::string& cache_prefix) {
   for (auto& cf : column_families) {
     auto file_cache = std::make_shared<BlobFileCache>(db_options_, cf.second,
                                                       file_cache_, stats_);
     auto blob_storage = std::make_shared<BlobStorage>(
-        db_options_, cf.second, cf.first, file_cache, stats_);
+        db_options_, cf.second, cf.first, cache_prefix, file_cache, stats_);
     column_families_.emplace(cf.first, blob_storage);
   }
 }

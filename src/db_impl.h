@@ -232,6 +232,8 @@ class TitanDBImpl : public TitanDB {
 
   void DumpStats();
 
+  void GenerateCachePrefix();
+
   FileLock* lock_{nullptr};
   // The lock sequence must be Titan.mutex_.Lock() -> Base DB mutex_.Lock()
   // while the unlock sequence must be Base DB mutex.Unlock() ->
@@ -251,6 +253,7 @@ class TitanDBImpl : public TitanDB {
   DBImpl* db_impl_;
   TitanDBOptions db_options_;
   std::unique_ptr<Directory> directory_;
+  std::string cache_prefix_;
 
   std::atomic<bool> initialized_{false};
 
